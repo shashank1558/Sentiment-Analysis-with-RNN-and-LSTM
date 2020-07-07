@@ -1,0 +1,5 @@
+*__pycache__*
+Pipfile
+*.vscode/*
+*.ipynb*
+credentials.py
