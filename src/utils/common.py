@@ -48,6 +48,9 @@ def preprocess(text):
     # Get list of words, remove punctuation marks and convert ro lowercase
     text_blob = TextBlob(text)    
     text = text_blob.stripped.lower()
+
+    # Remove anything that is not an alphabet or a number
+    text = re.sub('[^a-z\s]','',text)
     
     return text
     
@@ -77,5 +80,11 @@ def extract_tweet_features(tweet_dict):
     tweet = Tweet(text, id_str, created_at, sentiment)
     return tweet
 
-# sample = "@kim_siever Also, it's 🔔 obvious he doesn't give a sh-t about climatechange or denies it so this gives them the excuse to totally ignore it: even though Canada will differientially feels the effects of climate change more that lower latitude countries"
-# print(preprocess(sample))
+def get_word_index_dictionary(vocab):
+    """ creates word_to_index and index_to_word dictionaries """
+    word_to_index = {}
+    index_to_word = {}   
+    for index,word in enumerate(vocab):
+        word_to_index[word] = index
+        index_to_word[index] = word   
+    return word_to_index, index_to_word

@@ -1,5 +1,5 @@
 """Search tweets using tweepy"""
-import os
+import osdeactivate
 from credentials import consumer_key, consumer_secret, access_token, access_token_secret
 import tweepy
 import json
@@ -22,7 +22,7 @@ if __name__ == "__main__":
     except Exception as e:
             print("!!!! --- "+str(e))
 
-    with open("data/raw_tweets.txt","a") as file:
-        for tweet in tweets:
-            file.write(json.dumps(tweet._json))
-            file.write("\n")
+    # with open("data/raw_tweets.txt","a") as file:
+    #     for tweet in tweets:
+    #         file.write(json.dumps(tweet._json))
+    #         file.write("\n")

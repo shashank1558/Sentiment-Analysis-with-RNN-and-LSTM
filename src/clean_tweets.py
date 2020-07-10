@@ -1,7 +1,7 @@
 """Clean the raw tweets and store required features in csv"""
 import json
 import csv
-from common import calculate_sentiment, preprocess, extract_tweet_features
+from utils.common import calculate_sentiment, preprocess, extract_tweet_features
 
 input_file_name = "data/raw_tweets.txt"
 output_file_name = "data/tweets.csv"
