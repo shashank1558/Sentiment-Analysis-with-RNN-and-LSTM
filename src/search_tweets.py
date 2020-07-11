@@ -24,6 +24,5 @@ if __name__ == "__main__":
 
     with open("data/raw_tweets.txt","a") as file:
         for tweet in tweets:
-            print('yolo')
-            # file.write(json.dumps(tweet._json))
-            # file.write("\n")
+            file.write(json.dumps(tweet._json))
+            file.write("\n")
