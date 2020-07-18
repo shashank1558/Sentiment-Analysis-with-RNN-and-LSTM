@@ -1,98 +1,78 @@
-import numpy as np
-import tensorflow as tf
-from tensorflow.keras import layers
-from tensorflow.keras.preprocessing.text import Tokenizer
-from tensorflow.keras.preprocessing.sequence import pad_sequences
+"""
+Train the model and evaluate using test and cross-validation sets 
+"""
 from tensorflow import keras
-from sklearn.model_selection import train_test_split
-from tensorflow.keras.utils import to_categorical
-import pandas as pd
+from sentiment_model import SentimentModel
 import matplotlib.pyplot as plt
-import seaborn as sns
-from collections import Counter
-from src.model.settings import embedding_dim, embeding_path, max_features
-from src.utils.common import get_word_embedding_dictionary, sentences_to_indices 
-import sys
-import os
-
-# Ignoring system gpu
-os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+import logging
 
 
-# %matplotlib inline
-
-
-# word_to_index, index_to_word, word_to_vec_map = get_word_embedding_dictionary()
-
-class SentimentModel():
-    word_to_index, index_to_word, word_to_vec_map = get_word_embedding_dictionary()
-    
+class Train():  
     def __init__(self):
-        # self.get_model()
-        pass
+        """Initialize for training"""
+        self.sentiment_obj = SentimentModel()
+        self.model = self.sentiment_obj.get_model()
+        self.X_train_indices, self.Y_train, self.X_val_indices,\
+             self.Y_val, self.X_test_indices, self.Y_test = self.sentiment_obj.load_data()
+          
+    def train_model(self, epochs):
+        """Train model"""
 
-    def get_model(self):
-        # Define sentence_indices as the input of the graph.
-        sentence_indices =layers.Input(shape=max_features, dtype="int32")
+        # Compile model before training
+        self.model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+        # Define callbacks
+        tensorboard_callback = keras.callbacks.TensorBoard(log_dir="src\logs")
+        early_stoping = keras.callbacks.EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=10)
+        model_checkpoint = keras.callbacks.ModelCheckpoint('model\model_v2.h5', monitor='val_loss', mode='min', save_best_only=True)
+
+        # Perform fitting
+        history = self.model.fit(self.X_train_indices, self.Y_train,
+                            epochs = epochs, batch_size = 32,
+                            shuffle=True, callbacks=[tensorboard_callback, early_stoping, model_checkpoint],
+                        validation_data = (self.X_val_indices, self.Y_val))
         
-        # Create the embedding layer pretrained with GloVe Vectors
-        embedding_layer = self.load_embedding_layer()
-        
-        embeddings = embedding_layer(sentence_indices)   
-        x = layers.LSTM(50, return_sequences=True)(embeddings)
-        x = layers.Dropout(0.4)(x)
-        x = layers.BatchNormalization()(x)
-        x = layers.LSTM(50)(x)
-        x = layers.Dropout(0.4)(x)
-        x = layers.BatchNormalization()(x)
-        predictions = layers.Dense(1, activation="sigmoid", name="predictions")(x)
-        
-        # Create Model instance which converts sentence_indices into X.
-        model = keras.Model(inputs=sentence_indices,outputs=predictions)        
-        
-        return model
+        # Evaluate model
+        self.evaluate_model()
 
-    def __repr__(self):
-        return "Heloo"
+        return history
 
-    def load_data(self):
-        tweets = pd.read_csv("data/tweets_improved.csv")
-        tweets_test = pd.read_csv("data/tweets_test.csv")
-        X_train = tweets["tweet"]
-        Y_train = tweets["sentiment"]
-        X_val, X_test, Y_val, Y_test = train_test_split (tweets_test["tweet"],\
-             tweets_test["sentiment"], test_size = 0.50, random_state = 1)
+    def evaluate_model(self):
+        """Evaluate trained model on test set"""
 
-        X_train_indices = sentences_to_indices(X_train, self.word_to_index, max_features)
-        X_val_indices = sentences_to_indices(X_val,self.word_to_index, max_features)
-        X_test_indices = sentences_to_indices(X_test, self.word_to_index, max_features)
+        logging.critical("--- Evaluating on Test set")
+        loss, acc = self.model.evaluate(self.X_test_indices, self.Y_test)
+        logging.critical(f"Test accuracy = {acc}")
+        logging.critical(f"Test loss = {loss}")
 
-        return X_train_indices, Y_train, X_val_indices, Y_val, X_test_indices, Y_test
+    def plot_loss(self, history):
+        """Plot training and cross-validation loss"""
+        plt.plot(history.history['loss'])
+        plt.plot(history.history['val_loss'])
+        plt.title('model loss')
+        plt.ylabel('loss')
+        plt.xlabel('epoch')
+        plt.legend(['train','validation'], loc='upper left')
+        # plt.savefig('notebook/img/loss_600dpi.png', dpi=600, bbox_inches='tight')
+        plt.show()
 
-    def load_embedding_layer(self):
-        # Adding 1 to fit Keras embedding (requirement)
-        vocab_len = len(self.word_to_index) + 1                  
+    def plot_accuracy(self, history):
+        """Plot training and cross-validation accuracy"""
+        plt.plot(history.history['accuracy'])
+        plt.plot(history.history['val_accuracy'])
+        plt.title('model accuracy')
+        plt.ylabel('accuracy')
+        plt.xlabel('epoch')
+        plt.legend(['train','validation'], loc='upper left')
+        # plt.savefig('notebook/img/accuracy_600dpi.png', dpi=600, bbox_inches='tight')
+        plt.show()
+               
 
-        emb_matrix = np.zeros((vocab_len,embedding_dim))
-        for word, idx in self.word_to_index.items():
-            emb_matrix[idx, :] = self.word_to_vec_map[word]
-
-        embedding_layer = layers.Embedding(
-                            vocab_len,
-                            embedding_dim,
-                            trainable = False
-                            )
-
-        # Build the embedding layer (required before setting the weights) 
-        embedding_layer.build((None,))
-        
-        # Set the weights of the embedding layer to the embedding matrix.Layer is now pretrained.
-        embedding_layer.set_weights([emb_matrix])
-        
-        return embedding_layer
-
-
-
-sentiment_obj = SentimentModel()
-model = sentiment_obj.get_model()
-print(model.summary())
+if __name__ == "__main__":
+    training = Train()
+    # Number of epochs to train
+    epochs = 2
+    
+    history = training.train_model(epochs)
+    training.plot_loss(history)
+    training.plot_accuracy(history)
