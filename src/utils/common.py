@@ -85,7 +85,7 @@ def extract_tweet_features(tweet_dict):
 
 def get_word_embedding_dictionary():
     """ creates word_to_vector, word_to_index and index_to_word dictionaries """
-    with open(embeding_path, 'r', encoding='utf-8') as f:
+    with open(embeding_path, "r", encoding="utf-8") as f:
         words = set()
         word_to_vec_map = {}
         skip_count = 0

@@ -14,7 +14,7 @@ Note: There is a chance of interference from poetry (package manager used in thi
 from setuptools import setup, find_packages
 
 setup(
-    name='project',
+    name='sentiment_project',
     version='1.0',
     packages=find_packages(),
     )
