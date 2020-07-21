@@ -14,7 +14,7 @@ templates = Jinja2Templates(directory="src/webapp/templates")
 class Tweet(BaseModel):
     text: str
 
-# predict = Predict()
+predict = Predict()
 
 @app.get("/")
 async def root(request: Request):
@@ -23,7 +23,7 @@ async def root(request: Request):
     })
 
 
-@app.post("/sentiment", response_class=ORJSONResponse)
-async def sentiment(tweet:Tweet):  
+@app.post("/v1/api/sentiment", response_class=ORJSONResponse)
+async def get_sentiment(tweet:Tweet):  
     data = predict.get_sentiment(tweet.text)
     return data

@@ -1,0 +1,13 @@
+html, body{
+    font-family: 'Open Sans', sans-serif;
+}
+
+.sentiment_container {
+    height: 100vh !important;
+    overflow: auto !important;
+}
+
+#page_heading {
+    margin-top: 10%;
+}
+

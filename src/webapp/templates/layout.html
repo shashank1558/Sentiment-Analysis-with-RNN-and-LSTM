@@ -28,30 +28,38 @@
                 margin-top: 7%;
             }
 
-            #sentiment_text{
+            .sentiment_text_group{
                 margin-top: 5%;
             }
 
-            #sentiment_text textarea{
-                height: 200px;
+            .sentiment_text_group textarea{
+                height: 150px;
             }
 
             #analyse_button{
                 margin-top: 5%;
             }
 
+            #result_positive {
+                display: none;
+            }
+
+            #result_negative{
+                display: none;
+            }
+
             .btn-negative, .btn-negative:hover{
                 background-color: #ef5350 !important;
                 color: white;
                 width: 11vw;
-                font-size: 18px;
+                font-size: 15px;
             }
 
             .btn-positive, .btn-positive:hover{
                 background-color: #66bb6a !important;
                 color: white;
                 width: 11vw;
-                font-size: 18px;
+                font-size: 15px;
             }
         </style>
     </head>
@@ -64,9 +72,9 @@
 
         <!-- Optional JavaScript -->
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-            crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.js"
+			  integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+			  crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
             integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
             crossorigin="anonymous"></script>
