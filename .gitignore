@@ -7,3 +7,5 @@ data/word_embedding
 project.egg-info/
 poetry.lock
 pyproject.toml
+*logs*
+.idea*

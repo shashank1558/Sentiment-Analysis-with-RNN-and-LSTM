@@ -1,0 +1,86 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="sentiment_container container-fluid">
+    <div class="row  justify-content-center text-center">
+        <h1 id="page_heading">Twitter Sentiment Analyser</h1>
+        <div class="col-10 col-md-12 col-sm-12 col-xs-12 ">
+            <div class="sentiment_text_group">
+                <textarea class="form-control" id="sentiment_text" aria-label="With textarea" onkeyup="getWordCount(this.value);"></textarea>
+                <p style="font-style: italic !important; text-align: left !important;">Total words:&nbsp;
+                    <span id="word_count"></span>&nbsp;&nbsp;<span id="word_limit" style="color: red; font-size: 11px;">Word limit: 70 words </span>
+                </p>
+            </div>
+            <button type="button" class="btn btn-info btn-lg" id="analyse_button" onclick="getSentiment();">Analyse Sentiment</button>
+        </div>
+        
+        
+    </div>
+
+    <div class="row align-items-center result justify-content-center">
+        <div class="col-10 col-md-12 col-sm-12 col-xs-12">
+            <h3>Result:</h3>
+            <p><i>Analyse some text in the textarea to see result</i></p>
+            <br>
+            <button id="result_positive" class="btn btn-lg btn-positive">Positive&nbsp;
+                (<span class="degree">{{degree}}</span>%)
+            </button>
+            <button id="result_negative" class="btn btn-lg btn-negative">Negative&nbsp;
+                (<span class="degree">{{degree}}</span>%)
+            </button>
+        </div>
+            
+    </div>
+    
+</div>
+<script type="text/javascript">
+
+    function getSentiment() {  
+        // Calling API to get sentiment of text
+        var text = document.getElementById("sentiment_text").value;
+        var dataObject = {"text":text};
+        if (text.length==0){
+            alert("Text cannot be empty");
+        }
+        else{
+            $.ajax({
+                type: 'POST',
+                url: 'http://127.0.0.1:8000/v1/api/sentiment',
+                contentType: 'application/json',
+                data: JSON.stringify(dataObject),
+                dataType: 'json',
+                success: function (response) {
+
+                    if (response.sentiment=="positive"){
+                        $("#result_negative").hide();
+                        $("#result_positive").show();
+                    }
+                    else{
+                        $("#result_positive").hide();
+                        $("#result_negative").show();
+                    }
+                    $(".degree").text(response.degree);
+
+                },
+                error: function (request, status, error) {
+
+                    alert(error);
+                }
+            });
+        }   
+    }
+
+    function getWordCount(value){
+        // Wordcount of words in text area
+        var text = value.replace("\\s+", "").trim();
+        var wordCount = text.split(" ").length;
+        $("#word_count").html(wordCount);
+
+        if (wordCount > 70) {
+            console.log("Above limit");
+            var trimmed = text.split(" ").slice(0,70);
+            console.log(trimmed);
+            $("#sentiment_text").val(trimmed.join(" ")+" ");
+        }
+    }
+</script>
+{% endblock %}
