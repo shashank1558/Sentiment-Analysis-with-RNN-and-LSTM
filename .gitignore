@@ -3,8 +3,8 @@ Pipfile
 *.vscode/*
 *.ipynb_checkpoints
 credentials.py
-data/word_embedding
 project.egg-info/
 poetry.lock
 pyproject.toml
 *logs*
+.idea*

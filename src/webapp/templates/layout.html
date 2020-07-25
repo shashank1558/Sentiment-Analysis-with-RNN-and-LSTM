@@ -9,14 +9,14 @@
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
             integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap" rel="stylesheet"> 
-        <link rel="stylesheet" type="text/css" href="style.css" media="screen"/>
+            <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet"> 
+            <link rel="stylesheet" type="text/css" href="style.css" media="screen"/>
         <title>Sentiment Analyser</title>
         <style>
             html, body{
-                font-family: 'Open Sans', sans-serif;
-                background-color: #fafafa;
-                color: #424242;
+                font-family: 'Montserrat', sans-serif;
+                background-color: #38B6FF;
+                color: #FFFFFF;
             }
 
             .sentiment_container {
@@ -34,10 +34,13 @@
 
             .sentiment_text_group textarea{
                 height: 150px;
+                border-radius: .6rem !important;
             }
 
             #analyse_button{
                 margin-top: 5%;
+                background-color: #FFBD59 !important;
+                color: white;
             }
             
             .result{
@@ -53,17 +56,26 @@
             }
 
             .btn-negative, .btn-negative:hover{
-                background-color: #ef5350 !important;
+                background-color: #FF7070 !important;
                 color: white;
                 width: 11vw;
                 font-size: 15px;
+                font-style: italic !important;
+                pointer-events: none;
             }
 
             .btn-positive, .btn-positive:hover{
-                background-color: #66bb6a !important;
+                background-color: #7ED957 !important;
                 color: white;
                 width: 11vw;
                 font-size: 15px;
+                font-style: italic !important;
+                pointer-events: none;
+            }
+
+            #word_count{
+                font-style: italic !important;
+                text-align: left !important;
             }
 
             @media (max-width: 768px) {
@@ -98,12 +110,8 @@
 
             #analyse_button{
                 margin-top: 15% !important;
-            }
+            }            
 
-            #word_count{
-                font-style: italic !important;
-                text-align: left !important;
-            }
             }
 
         </style>
