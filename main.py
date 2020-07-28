@@ -4,11 +4,24 @@ from pydantic import BaseModel
 from src.model.predict import Predict
 from fastapi.responses import ORJSONResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
-
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
 templates = Jinja2Templates(directory="src/webapp/templates")
+
+
+# CORS configuration
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 # Payload type
 class Tweet(BaseModel):

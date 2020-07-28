@@ -2,7 +2,7 @@
 {% block content %}
 <div class="sentiment_container container-fluid">
     <div class="row  justify-content-center text-center">
-        <h1 id="page_heading">Tweet Sentiment Analyser</h1>
+        <h1 id="page_heading">Sentiment Analyser</h1>
         <div class="col-8 col-md-10 col-sm-12 col-xs-12 ">
             <div class="sentiment_text_group">
                 <textarea class="form-control" id="sentiment_text" aria-label="With textarea" onkeyup="getWordCount(this.value);"></textarea>
@@ -20,6 +20,9 @@
         <div class="col-8 col-md-10 col-sm-12 col-xs-12">
             <h3>Result:</h3>
             <p><i>Analyse some text in the textarea to see result</i></p>
+            <div id="loader" class="spinner-border text-light" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
             <button id="result_positive" class="btn btn-lg btn-positive">Positive&nbsp;
                 (<span class="degree">{{degree}}</span> %)
             </button>
@@ -42,27 +45,33 @@
         }
         else{
             $.ajax({
-                type: 'POST',
-                url: 'http://127.0.0.1:8000/v1/api/sentiment',
-                contentType: 'application/json',
+                type: "POST",
+                url: "http://18.217.68.211:8000/v1/api/sentiment",
+                contentType: "application/json",
                 data: JSON.stringify(dataObject),
-                dataType: 'json',
+                headers: {
+                    "Access-Control-Allow-Methods":"*",
+                    "Access-Control-Allow-Headers":"*",
+                    "Access-Control-Allow-Origin":"*",
+                    "Access-Control-Allow-Credentials":true
+                },
+                beforeSend: function(request) {
+                    $("#loader").show();
+                    $("#result_negative").hide();
+                    $("#result_positive").hide();
+                },
                 success: function (response) {
-
-                    if (response.sentiment=="positive"){
-                        $("#result_negative").hide();
+                    if (response.sentiment=="positive"){                      
                         $("#result_positive").show();
                     }
                     else{
-                        $("#result_positive").hide();
                         $("#result_negative").show();
                     }
                     $(".degree").text(response.degree);
-
                 },
-                error: function (request, status, error) {
-
-                    alert(error);
+                complete:function(response){
+                    // Hide image container
+                    $("#loader").hide();
                 }
             });
         }   
